@@ -1,0 +1,59 @@
+---
+- hosts: all
+  become: true
+
+  tasks:
+   - apt: 
+      name: apt-transport-https
+      update_cache: yes
+
+   - apt_key:
+      url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+
+   - copy:
+      src: node_10.x.list
+      dest: /etc/apt/sources.list.d/node_10.x.list
+ 
+   - name: instal main packages
+     apt:
+      name: "{{packages}}"
+      update_cache: yes
+     vars:
+      packages:
+      - git
+      - nodejs
+      - mongodb
+      - nginx
+      - build-essential
+
+   - git:
+      repo: "https://github.com/JedWatson/keystone-demo.git"
+      dest: /opt/keystone-demo/
+
+   - file:
+      path: /opt/keystone-demo/
+      mode: 777
+      recurse: yes
+
+   - name: Install keystone-demo
+     become: vagrant
+     npm:
+      path: /opt/keystone-demo/
+
+   - copy:
+      src: keystone-demo.service
+      dest: /etc/systemd/system/keystone-demo.service
+
+   - service: 
+      name: keystone-demo.service
+      enable: yes
+
+   - service: 
+      name: keystone-demo.service
+      state: started
+
+   - copy:
+      src: default
+      dest: /etc/nginx/sites-available/default
+
+

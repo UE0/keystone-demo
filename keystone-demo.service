@@ -1,0 +1,13 @@
+[Unit]
+Description=keystone-demo
+After=mongodb.service 
+
+[Service]
+WorkingDirectory=/opt/keystone-demo/
+Type=simple
+ExecStart=/usr/bin/node keystone
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
