@@ -56,4 +56,6 @@
       src: default
       dest: /etc/nginx/sites-available/default
 
-
+   - service: 
+      name: nginx.service
+      state: reloaded
